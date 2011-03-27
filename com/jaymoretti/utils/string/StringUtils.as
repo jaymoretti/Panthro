@@ -50,6 +50,20 @@ package com.jaymoretti.utils.string
 			}
 			return string;
 		}
+
+		public static function decode(properties : String) : Object
+		{
+			var object:Object = {};
+			var tempArray:Array = properties.split(", " );
+			
+			for each(var valueSet:String in tempArray)
+			{
+				var valueArray:Array = valueSet.split(":");
+				object[valueArray[0]] = valueArray[1]; 
+			}
+			
+			return object;
+		}
 	}
 }
 

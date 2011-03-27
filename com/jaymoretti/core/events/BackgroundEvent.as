@@ -21,6 +21,10 @@ package com.jaymoretti.core.events
 	{
 		public static const READY : String = "BackgroundReady";
 		public static const ERROR : String = "BackgroundError";
+		public static const MOVE : String = "BackgroundMove";
+		
+		public var y:Number;
+		public var moveMode:String;
 
 		public function BackgroundEvent(type : String, bubbles : Boolean = false, cancelable : Boolean = false)
 		{

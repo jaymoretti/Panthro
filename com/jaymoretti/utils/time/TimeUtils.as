@@ -10,27 +10,41 @@
  * 
  *			DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
  *	TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
- * 
+ *  
  *  0. You just DO WHAT THE FUCK YOU WANT TO. 
  *******************************************************************************/
-package com.jaymoretti.loading
+package com.jaymoretti.utils.time
 {
-	import flash.events.ProgressEvent;
-	import flash.events.Event;
-	import flash.events.IOErrorEvent;
-
-	public interface ILoader
+	public class TimeUtils
 	{
-		function load(url : String) : void;
+		public static function getCurrentTime () : String
+		{
+			var date:Date = new Date();
+			var hrs:Number = date.getHours();
+			var mins:Number = date.getMinutes();
+			var sec:Number = date.getSeconds();
+			var minLabel : String = doubleDigitFormat(mins);
 
-		function loadComplete(event : Event) : void;
+			if (hrs > 12)
+			{
+				hrs = hrs - 12;
+			}
+			else if (hrs == 0)
+			{
+				hrs = 12;
+			}
+			
 
-		function loadError(event : IOErrorEvent) : void;
+			return (doubleDigitFormat(hrs) + ":" + minLabel + ":" + doubleDigitFormat(sec) + "s");
+		}
 
-		function onProgress(event : ProgressEvent) : void
-
-		function get content() : *;
-
-		function get progress() : Number;
+		public static function doubleDigitFormat (num : uint) : String
+		{
+			if (num < 10)
+			{
+				return ("0" + num);
+			}
+			return String(num);
+		}
 	}
 }

@@ -21,6 +21,11 @@ package com.jaymoretti.core.events
 	{
 		public static const LOAD_ERROR : String = "AssetLoadError";
 		public static const LOAD_COMPLETE : String = "AssetLoadComplete";
+		public static const LOAD_PROGRESS : String = "AssetLoadProgress";
+		public static const LOAD_START : String = "AssetLoadStart";
+		
+		public var percentage : Number;
+		public var roundPercentage:int, bytesTotal:int,  bytesLoaded : int;
 		public var content : *;
 
 		public function AssetLoadEvent(type : String, bubbles : Boolean = false, cancelable : Boolean = false)
