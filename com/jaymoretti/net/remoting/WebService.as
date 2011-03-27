@@ -71,7 +71,8 @@ package com.jaymoretti.net.remoting
 		public static function call(method : String, ...parameters) : void
 		{
 			var responder : Responder = new Responder(onResult, onStatus);
-			gateway.call(method, responder, parameters.join(", "));
+			var args:Array = [method ,responder].concat(parameters);
+			gateway.call.apply(WebService, args);
 		}
 
 
@@ -98,12 +99,12 @@ package com.jaymoretti.net.remoting
 		 */
 		private static function statusHandler(event : NetStatusEvent) : void
 		{
-			LogBook.log(LogLevel.TRACE, "WEBSERVICE STATUS: "+event.info.code);
+			
 		}
 
 		private static function errorHandler(event : IOErrorEvent) : void
 		{
-			LogBook.log(LogLevel.ERROR, event);			
+						
 		}
 
 		private static function onResult(result : *) : void
