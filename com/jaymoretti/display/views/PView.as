@@ -13,7 +13,7 @@
  * 
  *  0. You just DO WHAT THE FUCK YOU WANT TO. 
  *******************************************************************************/
-package com.jaymoretti.display
+package com.jaymoretti.display.views
 {
 	import flash.display.MovieClip;
 

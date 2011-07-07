@@ -13,10 +13,16 @@
  * 
  *  0. You just DO WHAT THE FUCK YOU WANT TO. 
  *******************************************************************************/
-package com.jaymoretti.display
+package com.jaymoretti.display.pages
 {
-	public interface IPAsset extends IDisposable
-	{
-				
+	
+	public interface IPage {
+		function init(params:Object):void;
+		function loadDependencies(path:String) : void;
+		function animateIn() : void;
+		function animateOut() : void
+		function deeplink() : void
+		function get id() : String;
+		
 	}
 }

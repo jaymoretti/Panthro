@@ -13,7 +13,7 @@
  * 
  *  0. You just DO WHAT THE FUCK YOU WANT TO. 
  *******************************************************************************/
-package com.jaymoretti.pages
+package com.jaymoretti.display.pages
 {
 	import com.jaymoretti.display.PView;
 	import com.jaymoretti.core.events.PageEvent;

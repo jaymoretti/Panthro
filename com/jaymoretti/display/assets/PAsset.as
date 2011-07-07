@@ -2,7 +2,7 @@
  * 			DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
  * 					Version 2, December 2004
  * 
- * Copyright (C) Mar 2, 2011 - Jay Moretti <jrmoretti@gmail.com>
+ * Copyright (C) Jan 26, 2011 - Jay Moretti <jrmoretti@gmail.com>
  * 
  * Everyone is permitted to copy and distribute verbatim or modified
  * copies of this license document, and changing it is allowed as long
@@ -13,16 +13,19 @@
  * 
  *  0. You just DO WHAT THE FUCK YOU WANT TO. 
  *******************************************************************************/
-package com.jaymoretti.pages
+package com.jaymoretti.display.assets
 {
-	
-	public interface IPage {
-		function init(params:Object):void;
-		function loadDependencies(path:String) : void;
-		function animateIn() : void;
-		function animateOut() : void
-		function deeplink() : void
-		function get id() : String;
-		
+	import flash.display.Sprite;
+
+	public class PAsset extends Sprite implements IPAsset
+	{
+		public function PAsset():void
+		{
+			super();
+		}
+		public function dispose():void
+		{
+			
+		}
 	}
 }

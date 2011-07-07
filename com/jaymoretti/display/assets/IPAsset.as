@@ -13,19 +13,10 @@
  * 
  *  0. You just DO WHAT THE FUCK YOU WANT TO. 
  *******************************************************************************/
-package com.jaymoretti.pages
+package com.jaymoretti.display.assets
 {
-	import com.jaymoretti.core.config.Config;
-	
-	dynamic public class Pages extends Object {
-		public static function init() : void {
-			for each(var i:* in Config.configObject.pages)
-			{
-				if(i.type == "internal")
-					Pages[i.id] = {id: i.id, type:i.type, title: i.title, deeplink: i.deeplink, dependencies: i.dependencies, menuOptions:i.menuOptions};
-				else if(i.type == "external")
-					Pages[i.id] = {id: i.id, type:i.type, url: i.url, menuOptions:i.menuOptions};
-			}
-		}
+	public interface IPAsset extends IDisposable
+	{
+				
 	}
 }
