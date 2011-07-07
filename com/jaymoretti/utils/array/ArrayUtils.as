@@ -72,5 +72,18 @@ package com.jaymoretti.utils.array
 		{
 			return array[Math.floor(Math.random()*array.length)];
 		}
+		
+		public static function getIndex(value:String, array:Array):int
+		{
+			
+			for (var i : int = 0; i != array.length; i++)
+			{
+				if (array[i] == value)
+				{
+					return i;
+				}
+			}
+			return -1;
+		}
 	}
 }

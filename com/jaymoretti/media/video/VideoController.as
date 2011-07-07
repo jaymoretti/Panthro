@@ -17,10 +17,13 @@ package com.jaymoretti.media.video
 {
 	import com.jaymoretti.core.debug.LogBook;
 	import com.jaymoretti.core.events.VideoEvent;
+	
 	import flash.display.Sprite;
 	import flash.events.AsyncErrorEvent;
 	import flash.events.NetStatusEvent;
 	import flash.events.SecurityErrorEvent;
+	import flash.globalization.DateTimeFormatter;
+	import flash.globalization.LocaleID;
 	import flash.media.SoundMixer;
 	import flash.media.SoundTransform;
 	import flash.media.Video;
@@ -41,6 +44,7 @@ package com.jaymoretti.media.video
 		private var _videoStatus : String;
 		private var _lastStatus : String = "";
 		private var _soundMixer : SoundTransform;
+		private var _dateTimeFormatter:DateTimeFormatter;
 
 		/***************
 		 *  Init Function
@@ -48,17 +52,17 @@ package com.jaymoretti.media.video
 		 *  @param fileName file name 
 		 *  @param autoPlay 
 		 */
-		public function init(url : String, fileName : String, autoPlay : Boolean = true) : void
+		public function init(url : String, autoPlay : Boolean = true) : void
 		{
 			_autoPlay = autoPlay;
-			_fileName = fileName;
+			
 			_url = url;
-
+			_dateTimeFormatter = new DateTimeFormatter(LocaleID.DEFAULT);
 			_connection = new NetConnection();
 			_connection.client = this;
 			_connection.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
 			_connection.addEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
-			_connection.connect("rtmp://s2exdhdoxccg0k.cloudfront.net/cfx/st");
+			_connection.connect(null);
 		}
 
 		private function connectStream() : void
@@ -72,8 +76,7 @@ package com.jaymoretti.media.video
 			_client.onMetaData = metaDataHandler;
 			_video = new Video();
 			_video.attachNetStream(_stream);
-			_video.height = 334;
-			_video.width = 594;
+			
 			_stream.bufferTime = .5;
 			_stream.play(_url);
 			_soundMixer = SoundMixer.soundTransform;
@@ -116,7 +119,6 @@ package com.jaymoretti.media.video
 					}
 					break;
 				case "NetStream.Buffer.Flush":
-					LogBook.log("BUFFER FLUSH");
 					break;
 				case "NetStream.Buffer.Empty":
 					if (_videoStatus == "playing")
@@ -129,19 +131,14 @@ package com.jaymoretti.media.video
 					}
 					break;
 				case "NetStream.Pause.Notify":
-					LogBook.log("PAUSE");
 					break;
 				case "NetStream.Unpause.Notify":
-					LogBook.log("UN PAUSE");
 					break;
 				case "NetStream.Play.Start":
-					LogBook.log("PLAY START");
 					break;
 				case "NetStream.Play.Stop":
-					LogBook.log("STOP ");
 					break;
 				case "NetStream.Seek.Notify":
-					LogBook.log("SEEKING");
 					break;
 			}
 
@@ -313,6 +310,46 @@ package com.jaymoretti.media.video
 		{
 			return _duration;
 		}
+		/****
+		 * get current formatted playhead time;
+		 */
+		public function get currentFormattedTime() : String
+		{
+			var ms:Number = Math.floor(_stream.time*1000);
+			var minutes:Number = Math.floor((ms % (1000*60*60)) / (1000*60));
+			var seconds:Number = Math.floor(((ms % (1000*60*60)) % (1000*60)) / 1000);
+			var leadMin:String = "";
+			var leadSec:String = "";
+			
+			if(minutes< 10)
+				leadMin = "0";
+			
+			if(seconds< 10)
+				leadSec = "0";
+			
+			return leadMin+minutes+":"+leadSec+seconds;
+		}
+		
+		/****
+		 * get current formatted playhead time;
+		 */
+		public function get currentFormattedTimeLeft() : String
+		{
+			var ms:Number = Math.floor((_duration - _stream.time)*1000);
+			var minutes:Number = Math.floor((ms % (1000*60*60)) / (1000*60));
+			var seconds:Number = Math.floor(((ms % (1000*60*60)) % (1000*60)) / 1000);
+			var leadMin:String = "";
+			var leadSec:String = "";
+			
+			if(minutes< 10)
+				leadMin = "0";
+			
+			if(seconds< 10)
+				leadSec = "0";
+			
+			return leadMin+minutes+":"+leadSec+seconds;
+		}
+	
 
 		/****
 		 * get video Status;
