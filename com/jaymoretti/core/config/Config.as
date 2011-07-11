@@ -15,12 +15,11 @@
  *******************************************************************************/
 package com.jaymoretti.core.config
 {
-
+	import com.jaymoretti.events.AssetLoadEvent;
+	import com.jaymoretti.loading.types.AssetTypes;
 	import com.jaymoretti.core.debug.LogBook;
-	import com.jaymoretti.core.events.ConfigEvent;
-	import com.jaymoretti.core.events.XMLEvent;
-	import com.jaymoretti.loading.XMLLoader;
-
+	import com.jaymoretti.events.ConfigEvent;
+	import com.jaymoretti.loading.AssetLoader;
 	import flash.display.Sprite;
 
 
@@ -29,7 +28,7 @@ package com.jaymoretti.core.config
 		public static var SOUND_LIST:Array = [];
 		
 		private var _configFile : String;
-		private var _xmlLoader : XMLLoader;
+		private var _xmlLoader : AssetLoader;
 		private var _configData : XML;
 		private var _pages : Array;
 		private var _gateways : Object;
@@ -54,15 +53,13 @@ package com.jaymoretti.core.config
 
 		private function loadConfig() : void
 		{
-			_xmlLoader = new XMLLoader();
-			_xmlLoader.load(_configFile);
-			_xmlLoader.addEventListener(XMLEvent.LOAD_COMPLETE, onComplete);
-			_xmlLoader.addEventListener(XMLEvent.LOAD_ERROR, onError);
+
+			AssetLoader.loadAsset({url:_configFile, type:AssetTypes.XML, onError:onError, onComplete:onComplete});
 		}
 
-		private function onComplete(event : XMLEvent) : void
+		private function onComplete(event : AssetLoadEvent) : void
 		{
-			_configData = event.xml;
+			_configData = event.content;
 
 			if (!_configData)
 			{
@@ -83,7 +80,7 @@ package com.jaymoretti.core.config
 			}
 		}
 
-		private function onError(event : XMLEvent) : void
+		private function onError(event : AssetLoadEvent) : void
 		{
 			dispatchEvent(new ConfigEvent(ConfigEvent.CONFIG_ERROR));
 		}

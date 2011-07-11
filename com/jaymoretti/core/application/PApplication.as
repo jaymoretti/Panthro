@@ -15,7 +15,8 @@
  *******************************************************************************/
 package com.jaymoretti.core.application
 {
-	import com.jaymoretti.display.IPView;
+	import com.jaymoretti.display.views.IPView;
+
 	import flash.display.Sprite;
 	public class PApplication extends Sprite implements IApplication
 	{

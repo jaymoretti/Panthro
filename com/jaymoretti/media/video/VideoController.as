@@ -15,15 +15,12 @@
  *******************************************************************************/
 package com.jaymoretti.media.video
 {
-	import com.jaymoretti.core.debug.LogBook;
-	import com.jaymoretti.core.events.VideoEvent;
-	
+	import com.jaymoretti.events.VideoEvent;
+
 	import flash.display.Sprite;
 	import flash.events.AsyncErrorEvent;
 	import flash.events.NetStatusEvent;
 	import flash.events.SecurityErrorEvent;
-	import flash.globalization.DateTimeFormatter;
-	import flash.globalization.LocaleID;
 	import flash.media.SoundMixer;
 	import flash.media.SoundTransform;
 	import flash.media.Video;
@@ -44,7 +41,7 @@ package com.jaymoretti.media.video
 		private var _videoStatus : String;
 		private var _lastStatus : String = "";
 		private var _soundMixer : SoundTransform;
-		private var _dateTimeFormatter:DateTimeFormatter;
+		
 
 		/***************
 		 *  Init Function
@@ -57,7 +54,6 @@ package com.jaymoretti.media.video
 			_autoPlay = autoPlay;
 			
 			_url = url;
-			_dateTimeFormatter = new DateTimeFormatter(LocaleID.DEFAULT);
 			_connection = new NetConnection();
 			_connection.client = this;
 			_connection.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);

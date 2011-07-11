@@ -15,9 +15,8 @@
  *******************************************************************************/
 package com.jaymoretti.net.remoting
 {
-	import com.jaymoretti.core.debug.LogBook;
-	import com.jaymoretti.core.debug.LogLevel;
-	import com.jaymoretti.core.events.WebServiceEvent;
+	import com.jaymoretti.events.WebServiceEvent;
+
 	import flash.events.EventDispatcher;
 	import flash.events.IOErrorEvent;
 	import flash.events.NetStatusEvent;

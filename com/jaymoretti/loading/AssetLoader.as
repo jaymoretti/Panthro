@@ -15,19 +15,18 @@
  *******************************************************************************/
 package com.jaymoretti.loading
 {
-	import flash.net.URLLoader;
-	import flash.utils.ByteArray;
-	import flash.display.DisplayObject;
-	import flash.display.Bitmap;
-
-	import com.jaymoretti.core.events.AssetLoadEvent;
+	import com.jaymoretti.events.AssetLoadEvent;
 	import com.jaymoretti.loading.types.AssetTypes;
 
+	import flash.display.Bitmap;
+	import flash.display.DisplayObject;
 	import flash.display.Loader;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
+	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import flash.utils.ByteArray;
 
 	public class AssetLoader
 	{
@@ -47,7 +46,7 @@ package com.jaymoretti.loading
 			return _instance;
 		}
 
-		public static function loadAssets (params : Object) : void
+		public static function loadAsset (params : Object) : void
 		{
 			instance.loadAsset(params);
 		}
@@ -104,7 +103,8 @@ package com.jaymoretti.loading
 
 		private function onStart (event : Event) : void
 		{
-			event.currentTarget.removeEventListener(Event.INIT, onStart)
+			event.currentTarget.removeEventListener(Event.INIT, onStart);
+			
 			if (_params.onStart)
 			{
 				var startCallback : Function = _params.onStart;

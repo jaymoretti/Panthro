@@ -15,6 +15,7 @@
  *******************************************************************************/
 package com.jaymoretti.display.assets
 {
+	import com.jaymoretti.display.IDisposable;
 	public interface IPAsset extends IDisposable
 	{
 				

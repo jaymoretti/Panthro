@@ -15,6 +15,8 @@
  *******************************************************************************/
 package com.jaymoretti.display.layers
 {
+	import com.jaymoretti.display.views.PView;
+
 	import flash.display.DisplayObject;
 
 	public class Layer extends PView implements ILayer

@@ -15,7 +15,7 @@
  *******************************************************************************/
 package com.jaymoretti.utils.stage
 {
-	import com.jaymoretti.core.events.StageEvent;
+	import com.jaymoretti.events.StageEvent;
 
 	import flash.display.Bitmap;
 	import flash.display.DisplayObject;

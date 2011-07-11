@@ -16,9 +16,6 @@
 package com.jaymoretti.display.views
 {
 	import flash.display.MovieClip;
-
-	import caurina.transitions.Tweener;
-
 	import flash.display.Sprite;
 
 	public class PView extends Sprite implements IPView
@@ -40,12 +37,12 @@ package com.jaymoretti.display.views
 
 		public function animateIn() : void
 		{
-			Tweener.addTween(this, {alpha:1, time:1, transition:"easeOutQuint"});
+			// always override (preferably in the abstract object);
 		}
 
 		public function animateOut() : void
 		{
-			Tweener.addTween(this, {alpha:0, time:1, transition:"easeOutQuint"});
+			// always override (preferably in the abstract object);
 		}
 
 		public function freeze() : void

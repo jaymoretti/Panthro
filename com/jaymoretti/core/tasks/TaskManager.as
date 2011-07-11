@@ -15,8 +15,9 @@
  *******************************************************************************/
 package com.jaymoretti.core.tasks
 {
+	import com.jaymoretti.events.TaskManagerEvent;
+
 	import flash.events.EventDispatcher;
-	import com.jaymoretti.core.events.TaskManagerEvent;
 	public class TaskManager
 	{
 		private static var taskList:Array = [];

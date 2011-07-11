@@ -15,16 +15,15 @@
  *******************************************************************************/
 package com.jaymoretti.display.pages
 {
-	import com.jaymoretti.display.PView;
-	import com.jaymoretti.core.events.PageEvent;
-	import com.jaymoretti.loading.DependenciesLoader;
+	import com.jaymoretti.display.views.PView;
+	import com.jaymoretti.events.PageEvent;
 
 	import flash.display.Sprite;
 
 	public class AbstractPage extends PView implements IPage{
 		private var _container:Sprite;
 		private var _configProperties : Object = {id:""};
-		private var _dependenciesLoader : DependenciesLoader;
+		
 		
 		public function AbstractPage() {
 			super();
@@ -49,7 +48,7 @@ package com.jaymoretti.display.pages
 		}
 		
 		public function loadDependencies(path:String) : void {
-			//_dependenciesLoader = new DependenciesLoader(path);
+			// Always override this method
 				
 		}
 

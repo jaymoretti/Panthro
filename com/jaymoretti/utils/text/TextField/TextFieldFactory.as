@@ -20,34 +20,96 @@ package com.jaymoretti.utils.text.TextField
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
-
+ 
 	public class TextFieldFactory
 	{
-		public static function createTextField(text : String, size : Number, color : uint, x : Number, y : Number, fontName : String = "Tahoma", antiAliasType : String = AntiAliasType.NORMAL, maxWidth : Number = 0, maxHeight : Number = 0, editable : Boolean = false, bold : Boolean = false) : TextField
+		
+		/*******
+		 * Creates a sinple textField.
+		 * @param params An object containing the following properties.<br/>
+		 * 		  Mandatory Parameters:<br/>
+		 * 		  text String;<br/>
+		 * 		  properties Object;<br/>
+		 * 		  
+		 * 		  Object Parameters:<br/>
+		 * 		  size Number; 
+		 * 		  color uint;
+		 * 		  x Number; 
+		 * 		  y Number; 
+		 * 		  fontName String; 
+		 * 		  antiAliasType String; 
+		 * 		  maxWidth Number;
+		 * 		  maxHeight Number; 
+		 * 		  editable Boolean; 
+		 * 		  bold Boolean;
+		 *
+		 * @example TextFieldFactory.createTextField("This is a Text", {size: 20, color: 0xbeda77, fontName: "Helvetica", editable:true, bold:true}); 
+		 * 		  
+		 */
+		public static function createTextField(text : String, properties:Object) : TextField
 		{
-			return createTF(false, text, size, color, x, y, fontName, antiAliasType, maxWidth, maxHeight, editable);
+			return createTF(false, text, properties);
 		}
-
-		public static function createHTMLTextField(text : String, size : Number, color : uint, x : Number, y : Number, fontName : String = "Tahoma", antiAliasType : String = AntiAliasType.NORMAL, maxWidth : Number = 0, maxHeight : Number = 0, editable : Boolean = false, bold : Boolean = false) : TextField
+		
+ 		/*******
+		 * Creates a sinple textField.
+		 * @param params An object containing the following properties.<br/>
+		 * 		  Mandatory Parameters:<br/>
+		 * 		  text String;<br/>
+		 * 		  properties Object;<br/>
+		 * 		  
+		 * 		  Object Parameters:<br/>
+		 * 		  size Number; 
+		 * 		  color uint;
+		 * 		  x Number; 
+		 * 		  y Number; 
+		 * 		  fontName String; 
+		 * 		  antiAliasType String; 
+		 * 		  maxWidth Number;
+		 * 		  maxHeight Number; 
+		 * 		  editable Boolean; 
+		 * 		  bold Boolean;
+		 *
+		 * @example TextFieldFactory.createHTMLTextField("This is an HTMLText", {size: 20, color: 0xbeda77, fontName: "Helvetica", editable:true, bold:true}); 
+		 * 		  
+		 */
+		public static function createHTMLTextField(text : String, properties:Object) : TextField
 		{
-			return createTF(true, text, size, color, x, y, fontName, antiAliasType, maxWidth, maxHeight, editable);
+			return createTF(true, text, properties);
 		}
-
-		private static function createTF(html : Boolean, text : String, size : Number, color : uint, x : Number, y : Number, fontName : String = "Tahoma", antiAliasType : String = AntiAliasType.NORMAL, maxWidth : Number = 0, maxHeight : Number = 0, editable : Boolean = false, bold : Boolean = false) : TextField
+ 
+		private static function createTF(html : Boolean, text : String, properties:Object) : TextField
 		{
 			var _textFormater : TextFormat = new TextFormat;
 			_textFormater = new TextFormat();
-			_textFormater.font = fontName;
-			_textFormater.size = size;
-			if (bold)
+			
+			if(!properties.fontName)
+				properties.fontName = "Tahoma";
+				
+			_textFormater.font = properties.fontName;
+			
+			if(!properties.size)
+				properties.size= 12;
+				
+			_textFormater.size = properties.size;
+			
+			
+			
+			if (properties.bold)
 			{
 				_textFormater.bold = true;
 			}
-			_textFormater.color = color;
-
+			
+			if(!properties.color)
+				properties.color = 0x666;
+			
+			_textFormater.color = properties.color;
+ 
 			var tf : TextField = new TextField();
 			tf.defaultTextFormat = _textFormater;
-			if (editable == true)
+			
+			
+			if (properties.editable)
 			{
 				tf.type = TextFieldType.INPUT;
 			}
@@ -57,31 +119,50 @@ package com.jaymoretti.utils.text.TextField
 			}
 			tf.multiline = true;
 			tf.embedFonts = true;
-			tf.antiAliasType = antiAliasType;
+			
+			if(!properties.antiAliasType)
+				properties.antiAliasType = AntiAliasType.ADVANCED;
+				
+			tf.antiAliasType = properties.antiAliasType;
+ 
 
-			if (antiAliasType == AntiAliasType.ADVANCED)
+			if (properties.antiAliasType == AntiAliasType.ADVANCED)
 			{
 				tf.sharpness = 0;
 			}
-			if (maxWidth != 0)
+			
+			if(!properties.maxWidth)
+				properties.maxWidth = 0;
+			
+			if (properties.maxWidth != 0)
 			{
 				tf.wordWrap = true;
-				tf.width = maxWidth;
+				tf.width = properties.maxWidth;
 			}
-			if (maxHeight != 0)
+			
+			if(!properties.maxHeight)
+				properties.maxHeight = 0;
+			
+			if (properties.maxHeight != 0)
 			{
 				tf.wordWrap = true;
-				tf.height = maxHeight;
+				tf.height = properties.maxHeight;
 			}
 			if (html = true)
 				tf.htmlText = text;
 			else
 				tf.text = text;
-
-			tf.x = x;
-			tf.y = y;
+ 
+ 			if(!properties.x)
+ 				properties.x = 0;
+ 				
+ 			if(!properties.y)
+ 				properties.y = 0;
+ 
+			tf.x = properties.x;
+			tf.y = properties.y;
 			tf.selectable = false;
-
+ 
 			return tf;
 		}
 	}
