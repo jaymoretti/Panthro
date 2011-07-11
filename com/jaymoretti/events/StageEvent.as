@@ -13,7 +13,7 @@
  * 
  *  0. You just DO WHAT THE FUCK YOU WANT TO. 
  *******************************************************************************/
-package com.jaymoretti.core.events
+package com.jaymoretti.events
 {
 	import flash.events.Event;
 	
