@@ -16,91 +16,116 @@
  *******************************************************************************/
 package com.jaymoretti.core.debug
 {
+	import com.jaymoretti.utils.number.NumberUtils;
 
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.net.XMLSocket;
+	import flash.utils.getTimer;
 
 	public class LogBook
 	{
-		private static var server : String = "localhost";
+		
 		private static var _count : Number = 0;
-		private static var socket : XMLSocket;
+		private static var _timer : Number = 0;
 		private static var history : Array = [];
-		private static var fieldSeparator : String = "--> ";
-
+		private static var instance : LogBook;
+		
+		private var server : String = "localhost";
+		private var socket : XMLSocket;
+		
+		private var fieldSeparator : String = "--> ";
+		private var _socketFound : Boolean = true;
+		
 		public static function log(level:String = LogLevel.TRACE, ...params) : void
+		{
+			if(!instance)
+				instance = new LogBook();
+				
+			instance.log(level, params);
+		}
+
+		private function log(level:String = LogLevel.TRACE, ...params) : void
 		{
 			socket = new XMLSocket();
 			var tempError : Error = new Error();
 			var stackTrace : String = tempError.getStackTrace();
 			var callerInfo : Array = stackTrace.split("\n");
 
-			var caller : String = String(callerInfo[2]);
-			caller = caller.replace("\t", "");
+			var caller : String = String(callerInfo[3]).replace("\t", "");
 
 			caller = caller.substr("at".length);
-			caller = caller.substring(0, caller.indexOf("["));
-			caller += " ";
+			caller = caller.substring(1, caller.indexOf("["));
 
-			var divider : String;
-			divider = "";
+			var divider : String = "";
 			divider += ":~ $ ";
 
 			++_count;
-
-			var time : String;
-
-			var currentTime : Date = new Date();
-			var minutes : Number = currentTime.getMinutes();
-			var seconds : Number = currentTime.getSeconds();
-			var hours : Number = currentTime.getHours();
-
-			time = hours + ":" + minutes + ":" + seconds + "s ";
-
-			// trace( '---------------' );
-			var message : String = _count + " " + time + caller + divider + params.join(', ');
 			
+			var time:String;
+			var tempTimer:Number = 0;
+			
+			
+			if(_timer == 0)
+				_timer = getTimer();
+			
+			tempTimer = getTimer() - _timer;
+			time = String(NumberUtils.zeroPad(tempTimer, 4))+"ms";	
+
+			var message : String = NumberUtils.zeroPad(_count,4) + "  " + time + "\t" + caller + divider + params.join(', ');
 			var logObject:Object = {message:message, level:level};
-
-			if (socket.connected)
+			
+			if(!_socketFound)
 			{
-				send(logObject);
-			}
-			else
-			{
-				if (!socket.hasEventListener("connect"))
+				sendTrace(logObject);
+				return;
+			} else {
+			
+				if (socket.connected)
 				{
-					socket.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
-					socket.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
-					socket.addEventListener(Event.CONNECT, onConnect);
+					socketSend(logObject);
 				}
-				socket.connect(server, 4444);
-				history.push(logObject);
+				else
+				{	
+					if (!socket.hasEventListener("connect"))
+					{
+						socket.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
+						socket.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
+						socket.addEventListener(Event.CONNECT, onConnect);
+					}
+					socket.connect(server, 4444);
+					history.push(logObject);
+				}
 			}
 		}
 
-		private static function onIOError(e : IOErrorEvent) : void
+		private function onIOError(e : IOErrorEvent) : void
 		{
-			trace("XMLSocket IOError");
-		}
-
-		private static function onSecurityError(e : SecurityErrorEvent) : void
-		{
-			trace("XMLSocket SecurityError");
-		}
-
-		private static function onConnect(e : Event) : void
-		{
+			_socketFound = false;
+			
 			for each (var logObject:Object in history)
 			{
-				send(logObject);
+				sendTrace(logObject);
 			}
 			history = [];
 		}
 
-		private static function send(o : Object) : void
+		private function onSecurityError(e : SecurityErrorEvent) : void
+		{
+			_socketFound = false;
+		}
+
+		private function onConnect(e : Event) : void
+		{
+			for each (var logObject:Object in history)
+			{
+				socketSend(logObject);
+			}
+			history = [];
+		}
+
+		private function socketSend(o : Object) : void
 		{
 			var msg : String = o.message;
 			var lines : Array = msg.split("\n");
@@ -137,6 +162,16 @@ package com.jaymoretti.core.debug
 			}
 
 			socket.send('!SOS' + xmlMessage.toXMLString() + '\n');
+		}
+		
+		private function sendTrace(logObject:Object):void
+		{
+			var msg : String = logObject.message;
+			var lines : Array = msg.split("\n");
+			var commandType : String = lines.length == 1 ? "showMessage" : "showFoldMessage";
+			var key : String = "["+logObject.level.toString().toUpperCase()+"]";
+			
+			trace(key+"\t"+msg);
 		}
 
 		public static function divider() : void

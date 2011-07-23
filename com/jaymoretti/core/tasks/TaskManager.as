@@ -20,7 +20,7 @@ package com.jaymoretti.core.tasks
 	import flash.events.EventDispatcher;
 	public class TaskManager
 	{
-		private static var taskList:Array = [];
+		private static var taskList:Vector = new Vector.<ITask>;
 		private static var isExecuting : Boolean = false;
 		private static var isFirst : Boolean = true;
 		private static var dispatcher : EventDispatcher;
@@ -36,7 +36,7 @@ package com.jaymoretti.core.tasks
 			isExecuting = false;
 			taskList = [];
 		}
-		public static function getTaskLists():Array
+		public static function getTaskLists():Vector.<ITask>
 		{
 			return taskList;
 		}
