@@ -27,6 +27,8 @@ package com.jaymoretti.events
 		public var percentage : Number;
 		public var roundPercentage:int, bytesTotal:int,  bytesLoaded : int;
 		public var content : *;
+		public var id : String;
+		public var error : Error;
 
 		public function AssetLoadEvent(type : String, bubbles : Boolean = false, cancelable : Boolean = false)
 		{

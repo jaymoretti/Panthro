@@ -30,7 +30,8 @@ package com.jaymoretti.events
 		public var percentage : Number;
 		public var roundPercentage:int, bytesTotal:int,  bytesLoaded : int;
 		public var content : *;
-		public var batchID : String, itemID :String, itemPath:String;
+		public var batchID : String, itemID : String, itemPath : String;
+		public var error : Error;
 
 		public function BatchAssetLoadEvent(type : String, bubbles : Boolean = false, cancelable : Boolean = false)
 		{

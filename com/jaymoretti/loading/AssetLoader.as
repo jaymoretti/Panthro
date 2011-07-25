@@ -37,8 +37,10 @@ package com.jaymoretti.loading
 		private var _params : Object;
 		private var loader : *;
 		private var _content : *;
+		private var _id : String;
+		private var _loaded : Boolean;
 
-		public static function get instance () : AssetLoader
+		public static function get instance() : AssetLoader
 		{
 			if (!_instance)
 				_instance = new AssetLoader();
@@ -46,9 +48,9 @@ package com.jaymoretti.loading
 			return _instance;
 		}
 
-		public static function loadAsset (params : Object) : void
+		public static function loadAsset(params : Object, id : String = "") : void
 		{
-			instance.loadAsset(params);
+			instance.loadAsset(params, id);
 		}
 
 		/*******
@@ -68,7 +70,7 @@ package com.jaymoretti.loading
 		 * @example AssetLoader.loadAsset({url:"http://www.jaymoretti.com/test.jpg", type:AssetTypes.IMAGE, onStart:onStartHandler, onProgress, onProgress:Handler, onComplete:onCompleteHandler, onCompleteParams:[100, 100]});, 
 		 * 		  
 		 */
-		public function loadAsset (params : Object) : void
+		public function loadAsset(params : Object, id : String = "") : void
 		{
 			if (!params)
 				throw new Error("I can't work if you don't tell me what to load");
@@ -80,46 +82,51 @@ package com.jaymoretti.loading
 				throw new Error("I can't work if you don't tell me what to load");
 
 			_params = params;
+			_id = id;
 
 			if (params.type == AssetTypes.XML || params.type == AssetTypes.JSON || params.type == AssetTypes.YAML )
 			{
 				loader = new URLLoader();
-				loader.addEventListener(Event.COMPLETE, onAssetLoadComplete);
-				loader.addEventListener(ProgressEvent.PROGRESS, onProgress);
-				loader.addEventListener(IOErrorEvent.IO_ERROR, onError);
-				loader.addEventListener(Event.INIT, onStart);
+				loader.addEventListener(Event.COMPLETE, onComplete, 0, false, 0);
+				loader.addEventListener(ProgressEvent.PROGRESS, onProgress, 0, false, 0);
+				loader.addEventListener(IOErrorEvent.IO_ERROR, onError, 0, false, 0);
+				loader.addEventListener(Event.INIT, onStart, 0, false, 0);
 			}
 			else
 			{
 				loader = new Loader();
-				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onAssetLoadComplete);
-				loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, onProgress);
-				loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onError);
-				loader.contentLoaderInfo.addEventListener(Event.INIT, onStart);
+				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onComplete, 0, false, 0);
+				loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, onProgress, 0, false, 0);
+				loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onError, 0, false, 0);
+				loader.contentLoaderInfo.addEventListener(Event.INIT, onStart, 0, false, 0);
 			}
-
+			
+			_loaded = false; // workaround line... yes, I'm ashamed :p
 			loader.load(new URLRequest(params.url));
 		}
 
-		private function onStart (event : Event) : void
+		private function onStart(event : Event) : void
 		{
 			event.currentTarget.removeEventListener(Event.INIT, onStart);
-			
+
 			if (_params.onStart)
 			{
 				var startCallback : Function = _params.onStart;
 				var startEvent : AssetLoadEvent = new AssetLoadEvent(AssetLoadEvent.LOAD_START);
+				startEvent.id = _id;
 				startCallback(startEvent);
 			}
 		}
 
-		private function onError (event : IOErrorEvent) : void
+		private function onError(event : IOErrorEvent) : void
 		{
 			event.currentTarget.removeEventListener(IOErrorEvent.IO_ERROR, onError);
 			if (_params.onError)
 			{
 				var errorCallback : Function = _params.onError;
 				var errorEvent : AssetLoadEvent = new AssetLoadEvent(AssetLoadEvent.LOAD_ERROR);
+				errorEvent.error = new Error("IOError");
+				errorEvent.id = _id;
 				errorCallback(errorEvent);
 			}
 			else
@@ -128,13 +135,14 @@ package com.jaymoretti.loading
 			}
 		}
 
-		private function onProgress (event : ProgressEvent) : void
+		private function onProgress(event : ProgressEvent) : void
 		{
 			if (_params.onProgress)
 			{
 				var progressCallback : Function = _params.onProgress;
 
 				var progressEvent : AssetLoadEvent = new AssetLoadEvent(AssetLoadEvent.LOAD_PROGRESS);
+				progressEvent.id = _id;
 				progressEvent.bytesLoaded = event.bytesLoaded;
 				progressEvent.bytesTotal = event.bytesTotal;
 				progressEvent.percentage = (event.bytesLoaded / event.bytesTotal) * 100;
@@ -143,38 +151,45 @@ package com.jaymoretti.loading
 			}
 		}
 
-		private function onAssetLoadComplete (event : Event) : void
+		private function onComplete(event : Event) : void
 		{
-			event.currentTarget.removeEventListener(Event.COMPLETE, onAssetLoadComplete);
-			switch(_params.type)
+			// major nasty workaround for something I don't know why happen;
+			if (!_loaded)
 			{
-				case AssetTypes.IMAGE:
-					Bitmap(event.currentTarget.content).smoothing = true;
-					_content = Bitmap(event.currentTarget.content);
-					break;
-				case AssetTypes.SWF:
-					_content = DisplayObject(event.currentTarget.content);
-					break;
-				case AssetTypes.BYTES:
-					_content = ByteArray(event.currentTarget.content);
-					break;
-				case AssetTypes.XML:
-					XML.ignoreWhitespace = true;
-					_content = XML(event.currentTarget.data);
-					break;
-				case AssetTypes.JSON:
-					_content = Object(event.currentTarget.data);
-					break;
-				case AssetTypes.YAML:
-					_content = Object(event.currentTarget.data);
-					break;
+				event.currentTarget.removeEventListener(Event.COMPLETE, onComplete);
+
+				switch(_params.type)
+				{
+					case AssetTypes.IMAGE:
+						Bitmap(event.currentTarget.content).smoothing = true;
+						_content = Bitmap(event.currentTarget.content);
+						break;
+					case AssetTypes.SWF:
+						_content = DisplayObject(event.currentTarget.content);
+						break;
+					case AssetTypes.BYTES:
+						_content = ByteArray(event.currentTarget.content);
+						break;
+					case AssetTypes.XML:
+						XML.ignoreWhitespace = true;
+						_content = XML(event.currentTarget.data);
+						break;
+					case AssetTypes.JSON:
+						_content = Object(event.currentTarget.data);
+						break;
+					case AssetTypes.YAML:
+						_content = Object(event.currentTarget.data);
+						break;
+				}
+				_loaded = true;
+				onCompleteCallback();
 			}
-			onCompleteCallback();
 		}
 
-		private function onCompleteCallback () : void
+		private function onCompleteCallback() : void
 		{
 			var event : AssetLoadEvent = new AssetLoadEvent(AssetLoadEvent.LOAD_COMPLETE);
+			event.id = _id;
 			event.content = _content;
 
 			if (_params.onComplete)
