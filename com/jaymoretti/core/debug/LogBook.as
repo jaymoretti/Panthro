@@ -38,16 +38,23 @@ package com.jaymoretti.core.debug
 		private var fieldSeparator : String = "--> ";
 		private var _socketFound : Boolean = true;
 		
-		public static function log(level:String = LogLevel.TRACE, ...params) : void
+		public static function log(...params) : void
 		{
 			if(!instance)
 				instance = new LogBook();
+			
+			if(params[0]!=LogLevel.TRACE && params[0]!=LogLevel.WARN && params[0]!=LogLevel.DEBUG && params[0]!=LogLevel.ERROR && params[0]!=LogLevel.FATAL && params[0]!=LogLevel.INFO)
+				params.unshift(LogLevel.TRACE);
+			
+			var level:String = params[0];
 				
 			instance.log(level, params);
 		}
 
-		private function log(level:String = LogLevel.TRACE, ...params) : void
+		private function log(level:String, ...params) : void
 		{
+			
+			
 			socket = new XMLSocket();
 			var tempError : Error = new Error();
 			var stackTrace : String = tempError.getStackTrace();

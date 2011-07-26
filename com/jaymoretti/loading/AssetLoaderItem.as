@@ -15,6 +15,8 @@
  *******************************************************************************/
 package com.jaymoretti.loading
 {
+	import com.jaymoretti.core.debug.LogLevel;
+	import com.jaymoretti.core.debug.LogBook;
 	import flash.events.ProgressEvent;
 	import flash.net.URLRequest;
 	import flash.net.URLStream;
@@ -54,7 +56,6 @@ package com.jaymoretti.loading
 		{
 			
 			size = event.bytesTotal;
-			trace(this.id+": "+this.size+" bytes");
 			stream.close();
 		}
 	}
