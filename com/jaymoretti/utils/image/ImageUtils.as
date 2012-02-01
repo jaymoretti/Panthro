@@ -79,8 +79,7 @@ package com.jaymoretti.utils.image
 				}
 			}
 			// read header
-			var size:uint = data.readUnsignedInt ();
-			var type:String = data.readUTFBytes (CHUNK_TYPE_SIZE);
+			
 			return new Point (
 				data.readUnsignedInt (), // width
 				data.readUnsignedInt ()  // height

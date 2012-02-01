@@ -18,10 +18,8 @@ package com.jaymoretti.display.pages
 	import com.jaymoretti.display.views.PView;
 	import com.jaymoretti.events.PageEvent;
 
-	import flash.display.Sprite;
-
 	public class AbstractPage extends PView implements IPage{
-		private var _container:Sprite;
+		
 		private var _configProperties : Object = {id:""};
 		
 		

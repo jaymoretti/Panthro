@@ -15,6 +15,8 @@
  *******************************************************************************/
 package com.jaymoretti.utils.text.TextField
 {
+	import com.jaymoretti.core.debug.LogBook;
+	import flash.utils.describeType;
 	import flash.text.TextFieldType;
 	import flash.text.AntiAliasType;
 	import flash.text.TextField;
@@ -80,6 +82,8 @@ package com.jaymoretti.utils.text.TextField
  
 		private static function createTF(html : Boolean, text : String, properties:Object) : TextField
 		{
+			
+			
 			var _textFormater : TextFormat = new TextFormat;
 			_textFormater = new TextFormat();
 			
@@ -108,15 +112,11 @@ package com.jaymoretti.utils.text.TextField
 			var tf : TextField = new TextField();
 			tf.defaultTextFormat = _textFormater;
 			
-			
 			if (properties.editable)
 			{
 				tf.type = TextFieldType.INPUT;
 			}
-			else
-			{
-				tf.autoSize = TextFieldAutoSize.LEFT;
-			}
+		
 			tf.multiline = true;
 			tf.embedFonts = true;
 			
@@ -161,6 +161,22 @@ package com.jaymoretti.utils.text.TextField
  
 			tf.x = properties.x;
 			tf.y = properties.y;
+			
+			tf.width = 100;
+			tf.height = 100;
+			tf.autoSize = TextFieldAutoSize.LEFT;
+			
+			
+			var def : XML = describeType(tf);
+
+			var prop : XMLList = def..variable.@name + def..accessor.@name;
+
+			for each ( var property : String in prop ) {
+				if(property!="blendShader")
+					LogBook.log(property + ": " + tf[property]);
+			}
+			
+			
 			tf.selectable = false;
  
 			return tf;

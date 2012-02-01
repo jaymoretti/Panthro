@@ -91,7 +91,6 @@ package com.jaymoretti.utils.vector
 		 */
 		public static function getFirstIndexOf(value:String, property:String, vec:Vector.<*>):int
 		{
-			
 			for (var i:uint; i!= vec.length; i++)
 			{
 				if(property == "*")

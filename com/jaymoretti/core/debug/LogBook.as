@@ -1,4 +1,3 @@
-
 /******************************************************************************
  * 			DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
  * 					Version 2, December 2004
@@ -47,7 +46,7 @@ package com.jaymoretti.core.debug
 				params.unshift(LogLevel.TRACE);
 			
 			var level:String = params[0];
-				
+			params = params.slice(1,params.length);
 			instance.log(level, params);
 		}
 
@@ -174,8 +173,6 @@ package com.jaymoretti.core.debug
 		private function sendTrace(logObject:Object):void
 		{
 			var msg : String = logObject.message;
-			var lines : Array = msg.split("\n");
-			var commandType : String = lines.length == 1 ? "showMessage" : "showFoldMessage";
 			var key : String = "["+logObject.level.toString().toUpperCase()+"]";
 			
 			trace(key+"\t"+msg);

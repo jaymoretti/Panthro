@@ -15,8 +15,6 @@
  *******************************************************************************/
 package com.jaymoretti.loading
 {
-	import com.jaymoretti.core.debug.LogLevel;
-	import com.jaymoretti.core.debug.LogBook;
 	import flash.events.ProgressEvent;
 	import flash.net.URLRequest;
 	import flash.net.URLStream;
