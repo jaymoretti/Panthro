@@ -90,7 +90,7 @@ package com.jaymoretti.media.sound
 			_loopSoundChannel.stop ();
 
 		}
-		public static function resumeLoop (volume : Number = 1) : void
+		public static function resumeLoop () : void
 		{
 			if(!mute)
 			{

@@ -29,7 +29,7 @@ package com.jaymoretti.net.remoting
 	final public class WebService
 	{
 		private static var _serviceURL : String = "";
-		private static var _init : Boolean = false;
+		private static var _started : Boolean = false;
 		private static var gateway : NetConnection;
 		private static var _results : Object = {};
 		public static var _url : String;
@@ -43,7 +43,7 @@ package com.jaymoretti.net.remoting
 		{
 			
 			
-			if (!_init)
+			if (!_started)
 			{
 				dispatcher = new EventDispatcher();
 				gateway = new NetConnection();
@@ -57,7 +57,7 @@ package com.jaymoretti.net.remoting
 
 				_url = url.slice(0, url.length - 12);
 
-				_init = true;
+				_started = true;
 			
 			}
 		}

@@ -29,6 +29,8 @@ package com.jaymoretti.events
 		public var content : *;
 		public var id : String;
 		public var error : Error;
+		public var batchPos : int;
+		public var src : String;
 
 		public function AssetLoadEvent(type : String, bubbles : Boolean = false, cancelable : Boolean = false)
 		{

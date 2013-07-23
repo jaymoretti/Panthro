@@ -22,7 +22,7 @@ package com.jaymoretti.loading
 
 	public class BatchAssetLoader
 	{
-		public static const SIMULTANEOUS_LOADERS : uint = 3;
+		public static const SIMULTANEOUS_LOADERS : uint = 1;
 		protected var _batchID : String;
 		protected var _batchPos : uint = 0;
 		protected var _completedCallback : Function;
@@ -123,7 +123,6 @@ package com.jaymoretti.loading
 					_errorCallback = params.onError;
 			}
 
-			
 			prioritySort();
 			_currentlyLoading = new Vector.<AssetLoaderItem>();
 			
@@ -149,7 +148,6 @@ package com.jaymoretti.loading
 
 		private function loadNext() : void
 		{
-			
 			if (_batchPos < _batch.length)
 			{
 				if (_currentlyLoading.length < BatchAssetLoader.SIMULTANEOUS_LOADERS)
@@ -158,7 +156,7 @@ package com.jaymoretti.loading
 					if (!currentItem.isLoading)
 					{
 						_currentlyLoading.push(currentItem);
-						AssetLoader.loadAsset({url:currentItem.url, type:currentItem.type, onStart:currentItem.start, onProgress:currentItem.progress, onComplete:currentItem.complete, onCompleteParams:currentItem.onCompleteParams, onError:currentItem.error}, currentItem.id);
+						AssetLoader.loadAsset({url:currentItem.url, batchPos: _batchPos, type:currentItem.type, onStart:currentItem.start, onProgress:currentItem.progress, onComplete:currentItem.complete, onCompleteParams:currentItem.onCompleteParams, onError:currentItem.error}, currentItem.id);
 						currentItem.isLoading = true;
 						_batchPos++;
 					}
@@ -194,7 +192,7 @@ package com.jaymoretti.loading
 		{
 			var item : AssetLoaderItem = _batch[VectorUtils.getFirstIndexOf(event.id, "id", Vector.<*>(_batch))];
 			if (item.onError)
-				item.onError.call(event);
+				item.onError.call(this, event);
 		}
 
 		protected function itemCompleted(event : AssetLoadEvent) : void
@@ -203,12 +201,12 @@ package com.jaymoretti.loading
 				_currentlyLoading = Vector.<AssetLoaderItem>(VectorUtils.removeFromVector(_currentlyLoading[VectorUtils.getFirstIndexOf(event.id, "id", Vector.<*>(_currentlyLoading))], Vector.<*>(_currentlyLoading)));
 
 
-			
 			var item : AssetLoaderItem = _batch[VectorUtils.getFirstIndexOf(event.id, "id", Vector.<*>(_batch))];
 			item.content = event.content;
 			
-			if (item.onComplete)
-				item.onComplete.call(event);
+			if (item.onComplete){
+					item.onComplete.call(this, event);
+			}
 
 			if (_batchPos != _batch.length)
 				loadNext();
@@ -223,7 +221,7 @@ package com.jaymoretti.loading
 			item.loadedBytes = event.bytesLoaded;
 			
 			if (item.onProgress)
-				item.onProgress.call(event);
+				item.onProgress.call(this, event);
 
 			batchProgress();
 		}
@@ -244,6 +242,7 @@ package com.jaymoretti.loading
 
 		protected function batchCompleted() : void
 		{
+			
 			var event : BatchAssetLoadEvent = new BatchAssetLoadEvent(BatchAssetLoadEvent.LOAD_COMPLETE);
 			event.batchID = _id;
 			event.content = _batch;

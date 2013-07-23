@@ -28,7 +28,6 @@ package com.jaymoretti.core.config
 		public static var SOUND_LIST:Array = [];
 		
 		private var _configFile : String;
-		private var _xmlLoader : AssetLoader;
 		private var _configData : XML;
 		private var _pages : Array;
 		private var _gateways : Object;

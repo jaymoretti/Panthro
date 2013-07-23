@@ -15,8 +15,6 @@
  *******************************************************************************/
 package com.jaymoretti.utils.text.TextField
 {
-	import com.jaymoretti.core.debug.LogBook;
-	import flash.utils.describeType;
 	import flash.text.TextFieldType;
 	import flash.text.AntiAliasType;
 	import flash.text.TextField;
@@ -56,7 +54,7 @@ package com.jaymoretti.utils.text.TextField
  		/*******
 		 * Creates a sinple textField.
 		 * @param params An object containing the following properties.<br/>
-		 * 		  Mandatory Parameters:<br/>
+		 * 		  Mandatory Parameter s:<br/>
 		 * 		  text String;<br/>
 		 * 		  properties Object;<br/>
 		 * 		  
@@ -82,8 +80,6 @@ package com.jaymoretti.utils.text.TextField
  
 		private static function createTF(html : Boolean, text : String, properties:Object) : TextField
 		{
-			
-			
 			var _textFormater : TextFormat = new TextFormat;
 			_textFormater = new TextFormat();
 			
@@ -92,11 +88,10 @@ package com.jaymoretti.utils.text.TextField
 				
 			_textFormater.font = properties.fontName;
 			
-			if(!properties.size)
-				properties.size= 12;
+			if(!properties.fontSize)
+				properties.fontSize= 12;
 				
-			_textFormater.size = properties.size;
-			
+			_textFormater.size = properties.fontSize;
 			
 			
 			if (properties.bold)
@@ -131,6 +126,12 @@ package com.jaymoretti.utils.text.TextField
 				tf.sharpness = 0;
 			}
 			
+			if ( properties.lineHeight )
+				_textFormater.leading = properties.lineHeight;
+				
+			tf.width = 100;
+			tf.height = 100;
+			
 			if(!properties.maxWidth)
 				properties.maxWidth = 0;
 			
@@ -148,6 +149,7 @@ package com.jaymoretti.utils.text.TextField
 				tf.wordWrap = true;
 				tf.height = properties.maxHeight;
 			}
+			
 			if (html = true)
 				tf.htmlText = text;
 			else
@@ -162,20 +164,7 @@ package com.jaymoretti.utils.text.TextField
 			tf.x = properties.x;
 			tf.y = properties.y;
 			
-			tf.width = 100;
-			tf.height = 100;
 			tf.autoSize = TextFieldAutoSize.LEFT;
-			
-			
-			var def : XML = describeType(tf);
-
-			var prop : XMLList = def..variable.@name + def..accessor.@name;
-
-			for each ( var property : String in prop ) {
-				if(property!="blendShader")
-					LogBook.log(property + ": " + tf[property]);
-			}
-			
 			
 			tf.selectable = false;
  

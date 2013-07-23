@@ -13,8 +13,8 @@
  * 
  *  0. You just DO WHAT THE FUCK YOU WANT TO. 
  *******************************************************************************/
-package com.jaymoretti.loading
-{
+package com.jaymoretti.loading {
+	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
 	import flash.net.URLRequest;
 	import flash.net.URLStream;
@@ -36,9 +36,10 @@ package com.jaymoretti.loading
 
 			if (!params.url)
 				throw new Error("I can't work if you don't tell me what to load");
-				
+			
 			for(var param : * in params)
 				this[param] = params[param];
+			
 				
 			getFileSize();
 		}
@@ -47,9 +48,16 @@ package com.jaymoretti.loading
 		{
 			stream = new URLStream();
 			var request:URLRequest = new URLRequest(this.url);
+			stream.addEventListener(IOErrorEvent.IO_ERROR, gotError);
 			stream.addEventListener(ProgressEvent.PROGRESS, gotProgress);
 			stream.load(request);
 		}
+		
+		private function gotError(event:IOErrorEvent):void{
+			
+
+		}
+		
 		private function gotProgress(event:ProgressEvent):void
 		{
 			

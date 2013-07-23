@@ -35,6 +35,7 @@ package com.jaymoretti.loading
 		 */
 		private static var _instance : AssetLoader;
 		private var _params : Object;
+		private var _pos : int;
 		private var loader : *;
 		private var _content : *;
 		private var _id : String;
@@ -101,6 +102,10 @@ package com.jaymoretti.loading
 				loader.contentLoaderInfo.addEventListener(Event.INIT, onStart, 0, false, 0);
 			}
 			
+			if (params.batchPos)
+				_pos = params.batchPos;
+			
+			
 			_loaded = false; // workaround line... yes, I'm ashamed :p
 			loader.load(new URLRequest(params.url));
 		}
@@ -108,7 +113,7 @@ package com.jaymoretti.loading
 		private function onStart(event : Event) : void
 		{
 			event.currentTarget.removeEventListener(Event.INIT, onStart);
-
+			
 			if (_params.onStart)
 			{
 				var startCallback : Function = _params.onStart;
@@ -121,13 +126,15 @@ package com.jaymoretti.loading
 		private function onError(event : IOErrorEvent) : void
 		{
 			event.currentTarget.removeEventListener(IOErrorEvent.IO_ERROR, onError);
+			
 			if (_params.onError)
 			{
 				var errorCallback : Function = _params.onError;
 				var errorEvent : AssetLoadEvent = new AssetLoadEvent(AssetLoadEvent.LOAD_ERROR);
 				errorEvent.error = new Error("IOError");
 				errorEvent.id = _id;
-				errorCallback(errorEvent);
+				errorEvent.src = _params.url;
+				errorCallback.call(this, errorEvent);
 			}
 			else
 			{
@@ -137,16 +144,17 @@ package com.jaymoretti.loading
 
 		private function onProgress(event : ProgressEvent) : void
 		{
-			if (_params.onProgress)
-			{
-				var progressCallback : Function = _params.onProgress;
-
-				var progressEvent : AssetLoadEvent = new AssetLoadEvent(AssetLoadEvent.LOAD_PROGRESS);
+			
+			var progressEvent : AssetLoadEvent = new AssetLoadEvent(AssetLoadEvent.LOAD_PROGRESS);
 				progressEvent.id = _id;
 				progressEvent.bytesLoaded = event.bytesLoaded;
 				progressEvent.bytesTotal = event.bytesTotal;
 				progressEvent.percentage = (event.bytesLoaded / event.bytesTotal) * 100;
 				progressEvent.roundPercentage = Math.round(progressEvent.percentage);
+
+			if (_params.onProgress)
+			{
+				var progressCallback : Function = _params.onProgress;		
 				progressCallback(progressEvent);
 			}
 		}
@@ -190,6 +198,9 @@ package com.jaymoretti.loading
 		{
 			var event : AssetLoadEvent = new AssetLoadEvent(AssetLoadEvent.LOAD_COMPLETE);
 			event.id = _id;
+			if(_pos){
+				event.batchPos = _pos;
+			}
 			event.content = _content;
 
 			if (_params.onComplete)
